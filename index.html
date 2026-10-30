@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Meme Masters - Guess The Famous Memes (60s Timer)</title>
+  <meta name="description" content="Guess iconic dialogues, cinema moments, and viral Bollywood & Indian social media memes within a 60-second timer. Perfect for host screens and party quizzes.">
+  <meta name="theme-color" content="#ffffff">
+
+  <!-- Favicon & Web App Manifest -->
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="apple-touch-icon" href="favicon.svg">
+  <link rel="manifest" href="manifest.json">
+
+  <!-- Open Graph / WhatsApp / Social Share -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Meme Masters - Guess The Famous Memes">
+  <meta property="og:description" content="Can you guess famous Bollywood, Indian cinema, and viral internet memes before the 60-second timer runs out?">
+  <meta property="og:image" content="https://i.imgflip.com/495470930.jpg">
+
+  <!-- Twitter Meta Tags -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Meme Masters - Guess The Famous Memes">
+  <meta name="twitter:description" content="60-second challenge guessing legendary Indian and Bollywood viral memes.">
+  <meta name="twitter:image" content="https://i.imgflip.com/495470930.jpg">
+
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@600;700;800&display=swap" rel="stylesheet">
+</head>
+<body class="mode-host">
+
+  <div class="app-container">
+    
+    <!-- Top Header & Global Controls -->
+    <header class="app-header">
+      <div class="brand-section">
+        <h1 class="brand-title">Meme Masters</h1>
+      </div>
+
+      <div class="header-controls">
+        <!-- Category Filter -->
+        <select id="category-filter" class="select-control" aria-label="Filter by category">
+          <option value="all">🌟 All Memes (Bollywood + Social Media)</option>
+          <option value="Bollywood">🎬 Bollywood & Indian Cinema</option>
+          <option value="Social Media">📱 Indian Social Media & OTT</option>
+        </select>
+
+        <!-- Mode Toggle (Host vs Player) -->
+        <select id="mode-toggle" class="select-control" aria-label="Quiz presentation mode">
+          <option value="host">🎙️ Host / Screen Mode</option>
+          <option value="contestant">🎮 Multiple Choice Mode</option>
+        </select>
+
+        <!-- Sound FX Toggle -->
+        <button id="sound-toggle" class="btn btn-icon-only" aria-label="Toggle sound effects" title="Toggle Sound FX (M)">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+            <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+          </svg>
+        </button>
+
+        <!-- Fullscreen Toggle -->
+        <button id="fullscreen-toggle" class="btn btn-icon-only" aria-label="Toggle fullscreen" title="Fullscreen (F)">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>
+          </svg>
+        </button>
+
+        <!-- All Questions Grid Drawer -->
+        <button id="grid-toggle" class="btn" title="View all questions">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="7" height="7"></rect>
+            <rect x="14" y="3" width="7" height="7"></rect>
+            <rect x="14" y="14" width="7" height="7"></rect>
+            <rect x="3" y="14" width="7" height="7"></rect>
+          </svg>
+          <span>List</span>
+        </button>
+
+        <!-- Add Meme Button -->
+        <button id="add-meme-btn" class="btn btn-primary" title="Add your own custom Indian meme">
+          <span>+ Add Meme</span>
+        </button>
+
+        <!-- Shortcuts / Help -->
+        <button id="help-btn" class="btn btn-icon-only" title="Keyboard Shortcuts (?)">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Quiz Area -->
+    <main class="quiz-main">
+
+      <!-- Left Column: Meme Media Stage -->
+      <section class="media-card" aria-label="Meme presentation card">
+        <div class="media-meta-bar">
+          <div class="meta-badges">
+            <span id="category-badge" class="badge badge-bollywood">Bollywood</span>
+            <span id="media-type-badge" class="badge badge-media">IMAGE</span>
+          </div>
+          <div class="meta-right" style="display:flex; align-items:center; gap:0.75rem;">
+            <span style="font-size:0.75rem; color:var(--text-muted); font-weight:600;">🔍 Click to enlarge</span>
+            <div class="meta-counter">
+              Meme <span id="question-counter">1</span> / <span id="total-counter">20</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Video / Image Container -->
+        <div id="media-stage" class="media-stage">
+          <div id="media-wrapper">
+            <!-- Dynamic Image or Video rendered via app.js -->
+          </div>
+        </div>
+      </section>
+
+      <!-- Right Column: Interactive Panel (Timer, Hints, Answers) -->
+      <section class="quiz-panel" aria-label="Quiz controls and answer panel">
+
+        <!-- 60-Second Timer Card -->
+        <div id="timer-container" class="timer-card">
+          <div class="timer-visual">
+            <svg class="timer-svg" viewBox="0 0 100 100">
+              <circle class="timer-track" cx="50" cy="50" r="45"></circle>
+              <circle id="timer-svg-circle" class="timer-circle" cx="50" cy="50" r="45"></circle>
+            </svg>
+            <div id="timer-text" class="timer-time-display">01:00</div>
+          </div>
+
+          <div class="timer-actions">
+            <button id="timer-toggle-btn" class="btn btn-play" title="Spacebar to toggle">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                <polygon points="5 3 19 12 5 21 5 3"></polygon>
+              </svg>
+              Start
+            </button>
+            <button id="timer-reset-btn" class="btn" title="Reset back to 60s (R)">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+                <path d="M3 3v5h5"></path>
+              </svg>
+              Reset
+            </button>
+            <button id="timer-add10-btn" class="btn" title="Add 10 seconds">+10s</button>
+            <button id="timer-sub10-btn" class="btn" title="Subtract 10 seconds">-10s</button>
+          </div>
+        </div>
+
+        <!-- Clue / Hint Card -->
+        <div id="hint-section" class="hints-card">
+          <div class="hints-header">
+            <span>Hint</span>
+            <small style="color:var(--text-dim)">(Press H to reveal)</small>
+          </div>
+          <div class="hint-item">
+            <button id="hint-btn" class="hint-reveal-btn">
+              <span>💡 Reveal Hint</span>
+            </button>
+            <div id="hint-text" class="hint-text-box hidden"></div>
+          </div>
+        </div>
+
+        <!-- Host Mode: Reveal Answer Section -->
+        <div id="host-controls" class="host-stage">
+          <button id="reveal-answer-btn" class="btn btn-reveal-massive" title="Reveal Answer (Enter or A)">
+            👁️ Reveal Answer
+          </button>
+
+          <!-- Clean Answer Card (Only the correct answer) -->
+          <div id="answer-card" class="answer-card hidden">
+            <div class="answer-header">
+              <span>✅ Correct Answer</span>
+            </div>
+            <h2 id="answer-title" class="answer-title">Baburao Ganpatrao Apte</h2>
+          </div>
+        </div>
+
+        <!-- Contestant Mode: Multiple Choice Options -->
+        <div id="contestant-options" class="contestant-stage hidden">
+          <div id="options-grid" class="options-grid">
+            <!-- 4 Multiple choice buttons rendered via app.js -->
+          </div>
+        </div>
+
+      </section>
+
+    </main>
+
+    <!-- Bottom Navigation Bar -->
+    <footer class="quiz-footer">
+      <div class="footer-left">
+        <!-- Player Score (Only visible in Contestant / Multiple Choice Mode) -->
+        <div id="player-score-pill" class="team-pill mode-contestant-only">
+          <span style="font-size:0.85rem; font-weight:600; color:var(--text-secondary);">Score:</span>
+          <span id="solo-score" class="team-score-num">0</span>
+        </div>
+      </div>
+
+      <!-- Navigation & Reset -->
+      <div class="nav-controls">
+        <button id="reset-quiz-btn" class="btn" title="Reset quiz progress and answers">
+          Reset Quiz
+        </button>
+        <button id="prev-btn" class="btn" title="Previous Question (Left Arrow or P)">
+          ◀ Previous
+        </button>
+        <button id="next-btn" class="btn btn-primary" title="Next Question (Right Arrow or N)">
+          Next Meme ▶
+        </button>
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- Modal: Questions Grid Overview -->
+  <div id="grid-modal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="grid-title">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2 id="grid-title" class="modal-title">All Desi Meme Questions</h2>
+        <button id="grid-modal-close" class="modal-close" aria-label="Close modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div id="questions-grid" class="questions-grid">
+          <!-- Dynamically populated question cards -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Add Custom Meme -->
+  <div id="add-meme-modal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="add-title">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2 id="add-title" class="modal-title">+ Add Custom Indian Meme</h2>
+        <button id="add-meme-cancel" class="modal-close" aria-label="Close modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form id="add-meme-form">
+          <div class="form-group">
+            <label for="custom-title">Meme Title / Answer *</label>
+            <input type="text" id="custom-title" class="form-input" placeholder="e.g. Babu Bhaiya - Utha Le Re Baba" required>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="custom-category">Category *</label>
+              <select id="custom-category" class="form-select">
+                <option value="Bollywood">Bollywood & Indian Cinema</option>
+                <option value="Social Media">Indian Social Media & OTT</option>
+                <option value="Desi Pop Culture">Desi Pop Culture</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="custom-media-type">Media Format *</label>
+              <select id="custom-media-type" class="form-select">
+                <option value="image">Image (JPG / PNG / GIF / WebP)</option>
+                <option value="video">Video Clip (MP4 / WebM)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="custom-media-url">Media Web URL or Upload File below *</label>
+            <input type="url" id="custom-media-url" class="form-input" placeholder="https://example.com/meme.jpg">
+          </div>
+
+          <div class="form-group">
+            <label for="custom-media-file">Or Upload Local Image / Video File:</label>
+            <input type="file" id="custom-media-file" class="form-input" accept="image/*,video/*">
+            <div id="custom-file-preview" style="margin-top: 0.5rem;"></div>
+          </div>
+
+          <div class="form-group">
+            <label for="custom-hint">Clue / Hint</label>
+            <input type="text" id="custom-hint" class="form-input" placeholder="e.g. Directed by Priyadarshan in 2000, starring Paresh Rawal">
+          </div>
+
+          <div class="form-group">
+            <label for="custom-origin">Movie / Platform Origin</label>
+            <input type="text" id="custom-origin" class="form-input" placeholder="e.g. Hera Pheri (2000)">
+          </div>
+
+          <div class="form-group">
+            <label for="custom-trivia">Host Trivia / Famous Dialogue</label>
+            <textarea id="custom-trivia" class="form-textarea" rows="2" placeholder="Iconic dialogue or fun trivia to read aloud once revealed..."></textarea>
+          </div>
+
+          <div class="form-group">
+            <label>Multiple Choice Distractor Options (Optional):</label>
+            <div class="form-row" style="margin-bottom:0.5rem;">
+              <input type="text" id="custom-opt-a" class="form-input" placeholder="Option A (Default is Title)">
+              <input type="text" id="custom-opt-b" class="form-input" placeholder="Option B (Wrong Choice 1)">
+            </div>
+            <div class="form-row">
+              <input type="text" id="custom-opt-c" class="form-input" placeholder="Option C (Wrong Choice 2)">
+              <input type="text" id="custom-opt-d" class="form-input" placeholder="Option D (Wrong Choice 3)">
+            </div>
+          </div>
+
+          <div style="display:flex; justify-content:flex-end; gap:0.75rem; margin-top:1rem;">
+            <button type="submit" class="btn btn-primary">Save Meme</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Keyboard Shortcuts Cheat Sheet -->
+  <div id="shortcuts-modal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="shortcuts-title">
+    <div class="modal-card" style="max-width: 500px;">
+      <div class="modal-header">
+        <h2 id="shortcuts-title" class="modal-title">⌨️ Keyboard Shortcuts</h2>
+        <button id="shortcuts-modal-close" class="modal-close" aria-label="Close modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="shortcuts-list">
+          <div class="shortcut-row">
+            <span>Start / Pause 60s Timer</span>
+            <kbd>Space</kbd>
+          </div>
+          <div class="shortcut-row">
+            <span>Reset Timer to 60s</span>
+            <kbd>R</kbd>
+          </div>
+          <div class="shortcut-row">
+            <span>Next Meme</span>
+            <kbd>→</kbd> or <kbd>N</kbd>
+          </div>
+          <div class="shortcut-row">
+            <span>Previous Meme</span>
+            <kbd>←</kbd> or <kbd>P</kbd>
+          </div>
+          <div class="shortcut-row">
+            <span>Reveal Answer (Host Mode)</span>
+            <kbd>Enter</kbd> or <kbd>A</kbd>
+          </div>
+          <div class="shortcut-row">
+            <span>Reveal Hint</span>
+            <kbd>H</kbd>
+          </div>
+          <div class="shortcut-row">
+            <span>Toggle Fullscreen</span>
+            <kbd>F</kbd>
+          </div>
+          <div class="shortcut-row">
+            <span>Toggle Sound Effects</span>
+            <kbd>M</kbd>
+          </div>
+          <div class="shortcut-row">
+            <span>Close Any Modal</span>
+            <kbd>Esc</kbd>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Application Scripts -->
+  <script src="js/data.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/timer.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,23 @@
+{
+  "name": "meme-masters-quiz",
+  "version": "1.0.0",
+  "description": "Guess The Famous Memes - Interactive 60-Second Indian Cinema & Viral Social Media Meme Quiz",
+  "private": true,
+  "main": "index.html",
+  "scripts": {
+    "start": "npx serve .",
+    "dev": "npx serve .",
+    "test": "node test/validate.js && node test/http-check.js",
+    "build": "echo 'Static production assets ready'"
+  },
+  "keywords": [
+    "meme-quiz",
+    "bollywood-memes",
+    "indian-memes",
+    "quiz-game",
+    "timer-quiz",
+    "frontend"
+  ],
+  "author": "Meme Masters",
+  "license": "MIT"
+}

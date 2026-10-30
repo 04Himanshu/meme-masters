@@ -1,0 +1,17 @@
+{
+  "name": "Meme Masters - Guess The Famous Memes",
+  "short_name": "Meme Masters",
+  "description": "Guess famous Bollywood, Indian cinema, and viral social media memes with a 60-second timer challenge.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f8fafc",
+  "theme_color": "#0f172a",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
