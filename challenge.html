@@ -1,0 +1,1072 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Guess The Meme Challenge - Arena</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Montserrat:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="challenge-body">
+
+  <!-- Top Header Navigation -->
+  <header class="challenge-header">
+    <div class="challenge-brand">
+      <a href="index.html" class="back-btn" title="Return to Landing Poster">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="19" y1="12" x2="5" y2="12"></line>
+          <polyline points="12 19 5 12 12 5"></polyline>
+        </svg>
+        <span>Poster</span>
+      </a>
+      <h1 class="challenge-title">Guess The Meme Challenge</h1>
+    </div>
+
+    <div class="challenge-header-right">
+      <!-- View mode switch: Spotlight vs All Memes Grid -->
+      <div class="view-toggle-group">
+        <button id="view-spotlight-btn" class="toggle-tab active" title="Single Meme View">Spotlight</button>
+        <button id="view-grid-btn" class="toggle-tab" title="View all memes grid">All Memes</button>
+      </div>
+      <button id="open-add-meme-modal-btn" class="add-meme-btn" title="Add a new meme to the challenge">+ Add Meme</button>
+      <span id="meme-counter" class="challenge-counter-badge">Meme 1 / 14</span>
+      <button id="mic-test-btn" class="mic-test-btn" title="Mic Test" aria-label="Mic Test">
+        <svg class="mic-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></path>
+          <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+          <line x1="12" y1="19" x2="12" y2="22"></line>
+        </svg>
+        <span class="mic-btn-label">Mic Test</span>
+      </button>
+      <button id="show-angry-btn" class="angry-btn" title="Show Angry Man in meme window">Angry Man</button>
+    </div>
+  </header>
+
+  <!-- Challenge Main Stage with Clean White Background -->
+  <main class="challenge-main">
+
+    <!-- =======================================================================
+         VIEW 1: Single Meme Spotlight (First page shows first meme in rounded box)
+         ======================================================================= -->
+    <section id="spotlight-view" class="spotlight-view">
+      <div class="meme-box-container">
+        
+        <!-- Quick Selector Pills for All Memes -->
+        <nav class="meme-pills-bar" aria-label="Quick Jump to any of the memes">
+          <div id="pills-track" class="pills-track">
+            <!-- Dynamically populated 1 to 14 pills -->
+          </div>
+        </nav>
+
+        <!-- Rounded Corner Box Displaying the Meme Image/Video with White Background -->
+        <div class="meme-rounded-box">
+          
+          <!-- Hidden Placeholder State (Before clicking "Show meme") -->
+          <div id="meme-cover" class="meme-cover-card hidden">
+            <h3 class="cover-title">Guess The Meme</h3>
+            <p class="cover-sub">Click "Show meme" below to play the video</p>
+          </div>
+
+          <!-- The Meme Image -->
+          <img id="meme-display-img" class="meme-image" src="assets/images/meme_image1.png" alt="Guess The Meme - Round 1" />
+
+          <!-- Video Container (Loaded when "Show meme" is clicked) -->
+          <div id="meme-video-container" class="meme-video-container hidden"></div>
+        </div>
+
+        <!-- Optional Media Switcher (Toggle between Image & Video) -->
+        <button id="switch-media-btn" class="switch-media-btn hidden" title="Toggle between Image and Video">Show Image</button>
+
+        <!-- Controls: Previous, "Show Meme" Button, Next -->
+        <div class="challenge-controls">
+          <button id="prev-meme-btn" class="challenge-nav-btn" disabled title="Previous Meme">Previous</button>
+
+          <!-- The "Show Meme" Button -->
+          <button id="toggle-show-meme-btn" class="challenge-nav-btn show-meme-btn primary" title="Show Meme">
+            <span id="show-btn-text">Show meme</span>
+          </button>
+
+          <button id="next-meme-btn" class="challenge-nav-btn" title="Next Meme">Next</button>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- =======================================================================
+         VIEW 2: All Memes Grid (Displays all memes in rounded boxes)
+         ======================================================================= -->
+    <section id="grid-view" class="grid-view hidden">
+      <div class="all-memes-header">
+        <div class="all-memes-header-content">
+          <h2 class="all-memes-title">All Memes Collection</h2>
+          <p class="all-memes-subtitle">Browse all memes or click any card to spotlight it</p>
+        </div>
+        <button id="grid-add-meme-btn" class="add-meme-btn grid-btn" title="Add a new meme to the challenge">+ Add Meme</button>
+      </div>
+
+      <div id="all-memes-grid" class="all-memes-grid">
+        <!-- Dynamically rendered meme cards -->
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Modal: Add New Meme Dialog -->
+  <div id="add-meme-modal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="add-modal-title">
+    <div class="modal-backdrop" id="modal-backdrop"></div>
+    <div class="modal-card">
+      <div class="modal-header">
+        <div>
+          <h2 id="add-modal-title" class="modal-title">Add New Meme</h2>
+          <p class="modal-desc">Add a meme image and video link in the same challenge format</p>
+        </div>
+        <button type="button" class="modal-close-btn" id="modal-close-btn" aria-label="Close dialog">&times;</button>
+      </div>
+
+      <form id="add-meme-form" class="modal-form">
+        <!-- Meme Name / Title -->
+        <div class="form-group">
+          <label for="meme-name-input" class="form-label">Meme Title / Name</label>
+          <input type="text" id="meme-name-input" class="form-input" placeholder="e.g. Meme 15" required />
+        </div>
+
+        <!-- Meme Image: URL vs Upload -->
+        <!-- Meme Image: URL vs Upload from Computer -->
+        <div class="form-group">
+          <label class="form-label">Meme Image</label>
+          <div class="media-input-tabs">
+            <button type="button" class="tab-btn active" id="tab-image-url">Image URL / Path</button>
+            <button type="button" class="tab-btn" id="tab-image-file">Upload from Computer</button>
+          </div>
+          
+          <div id="image-url-pane">
+            <input type="text" id="meme-image-url-input" class="form-input" placeholder="e.g. assets/images/meme_image15.jpeg or https://..." />
+            <p class="form-hint">Supports relative paths (assets/images/...) or external image URLs</p>
+          </div>
+
+          <div id="image-file-pane" class="hidden">
+            <input type="file" id="meme-image-file-input" class="form-file-input" accept="image/*" />
+            <p class="form-hint">Select a photo from your computer (JPG, PNG, WebP)</p>
+          </div>
+
+          <div id="image-preview-box" class="media-preview-box hidden">
+            <img id="image-preview-el" class="image-preview-thumb" src="" alt="Meme image preview" />
+            <div style="flex: 1; min-width: 0;">
+              <div style="font-size: 0.775rem; font-weight: 700; color: #0f172a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" id="preview-filename">Image selected</div>
+              <div style="font-size: 0.7rem; color: #64748b;">Ready to display</div>
+            </div>
+            <button type="button" id="clear-image-preview-btn" class="clear-preview-btn">Change</button>
+          </div>
+        </div>
+
+        <!-- Meme Video: Link vs Upload from Computer -->
+        <div class="form-group">
+          <label class="form-label">Meme Video</label>
+          <div class="media-input-tabs">
+            <button type="button" class="tab-btn active" id="tab-video-url">Video Link / Path</button>
+            <button type="button" class="tab-btn" id="tab-video-file">Upload from Computer</button>
+          </div>
+
+          <div id="video-url-pane">
+            <input type="text" id="meme-video-input" class="form-input" placeholder="YouTube Shorts, Watch link, Instagram Reel, or local video" />
+            <p class="form-hint">Supports: youtube.com/shorts/..., youtube.com/watch?v=..., instagram.com/reel/..., or assets/videos/...mp4</p>
+          </div>
+
+          <div id="video-file-pane" class="hidden">
+            <input type="file" id="meme-video-file-input" class="form-file-input" accept="video/mp4,video/webm,video/quicktime,video/*" />
+            <p class="form-hint">Select an MP4, WebM, or video clip from your computer</p>
+          </div>
+
+          <div id="video-preview-box" class="media-preview-box hidden">
+            <div class="video-preview-badge">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                <polygon points="6 3 20 12 6 21 6 3"></polygon>
+              </svg>
+              <span>VIDEO</span>
+            </div>
+            <div style="flex: 1; min-width: 0;">
+              <div style="font-size: 0.775rem; font-weight: 700; color: #0f172a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" id="video-preview-filename">video.mp4</div>
+              <div style="font-size: 0.7rem; color: #64748b;" id="video-preview-filesize">Ready to play</div>
+            </div>
+            <button type="button" id="clear-video-preview-btn" class="clear-preview-btn">Change</button>
+          </div>
+        </div>
+
+        <!-- Orientation Selector -->
+        <div class="form-group">
+          <label class="form-label">Video Format / Orientation</label>
+          <div class="radio-pill-group">
+            <label class="radio-pill-label">
+              <input type="radio" name="orientation" value="portrait" checked />
+              <span>Portrait (9:16 Shorts/Reel)</span>
+            </label>
+            <label class="radio-pill-label">
+              <input type="radio" name="orientation" value="landscape" />
+              <span>Landscape (16:9 Video)</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="modal-actions">
+          <button type="button" id="modal-cancel-btn" class="btn-secondary">Cancel</button>
+          <button type="submit" id="modal-submit-btn" class="btn-primary">Add Meme</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="meme-toast" class="meme-toast"></div>
+
+  <!-- Audio Elements in assets -->
+  <audio id="meme-audio" src="assets/audio/nocopyright-meme.mp3" preload="auto"></audio>
+  <audio id="angry-audio" src="assets/audio/angry_audio.mp3" preload="auto"></audio>
+  <audio id="mic-test-audio" src="assets/audio/mic_test.mpeg" preload="auto"></audio>
+
+  <!-- Challenge Logic Script -->
+  <script>
+    (function () {
+      // Base 14 default memes
+      const defaultMemes = [
+        { id: 1, src: 'assets/images/meme_image1.png', name: 'Meme 01', videoUrl: 'https://www.youtube.com/shorts/jsvZ0BaJzEc', orientation: 'portrait' },
+        { id: 2, src: 'assets/images/meme_image2.jpeg', name: 'Meme 02', videoUrl: 'https://www.youtube.com/shorts/kEwEZ9MK9Sg', orientation: 'portrait' },
+        { id: 3, src: 'assets/images/meme_image3.jpeg', name: 'Meme 03', videoUrl: 'https://www.youtube.com/shorts/4cGGP7vpecs', orientation: 'portrait' },
+        { id: 4, src: 'assets/images/meme_image4.jpeg', name: 'Meme 04', videoUrl: 'https://www.youtube.com/watch?v=_m-0QJKqX7U', orientation: 'landscape' },
+        { id: 5, src: 'assets/images/meme_image5.jpeg', name: 'Meme 05', videoUrl: 'https://www.youtube.com/shorts/NBbMG2q-srA', orientation: 'portrait' },
+        { id: 6, src: 'assets/images/meme_image6.jpeg', name: 'Meme 06', videoUrl: 'https://www.youtube.com/shorts/n-_C9MVLLSk', orientation: 'portrait' },
+        { id: 7, src: 'assets/images/meme_image7.jpeg', name: 'Meme 07', videoUrl: 'https://www.youtube.com/shorts/r4t-PirnCgw', orientation: 'portrait' },
+        { id: 8, src: 'assets/images/meme_image8.jpeg', name: 'Meme 08', videoUrl: 'https://www.youtube.com/shorts/JNRXMs-Z5ZA', orientation: 'portrait' },
+        { id: 9, src: 'assets/images/meme_image9.jpeg', name: 'Meme 09', videoUrl: 'https://www.youtube.com/shorts/umDnHmzA90E', orientation: 'portrait' },
+        { id: 10, src: 'assets/images/meme_image10.jpeg', name: 'Meme 10', videoUrl: 'https://www.youtube.com/shorts/qujqxdg8OrY', orientation: 'portrait' },
+        { id: 11, src: 'assets/images/meme_image11.jpeg', name: 'Meme 11', videoUrl: 'https://www.instagram.com/reel/Der97Q3Th7U/', orientation: 'portrait' },
+        { id: 12, src: 'assets/images/meme_image12.jpeg', name: 'Meme 12', videoUrl: 'https://www.youtube.com/shorts/s2lOymMICKE', orientation: 'portrait' },
+        { id: 13, src: 'assets/images/meme_image13.jpeg', name: 'Meme 13', videoUrl: 'https://www.youtube.com/shorts/kP6jZexbM0M', orientation: 'portrait' },
+        { id: 14, src: 'assets/images/meme_image14.jpeg', name: 'Meme 14', videoUrl: 'assets/meme14.mp4', orientation: 'portrait' }
+      ];
+
+      // LocalStorage persistence for user-added memes
+      function loadCustomMemes() {
+        try {
+          const raw = localStorage.getItem('meme_masters_custom_memes') || localStorage.getItem('meme_challenge_custom_memes');
+          if (raw) {
+            const list = JSON.parse(raw);
+            if (Array.isArray(list)) {
+              // Only load custom memes added beyond default 14 memes
+              return list.filter(function (m) {
+                return m && m.id > 14 && m.name !== 'Meme 14';
+              });
+            }
+          }
+        } catch (err) {
+          console.warn('Could not load custom memes:', err);
+        }
+        return [];
+      }
+
+      function saveCustomMemes(list) {
+        try {
+          localStorage.setItem('meme_masters_custom_memes', JSON.stringify(list));
+        } catch (err) {
+          console.warn('Could not save custom memes:', err);
+        }
+      }
+
+      const customMemes = loadCustomMemes();
+      const allMemes = [...defaultMemes, ...customMemes];
+
+      let currentIndex = 0;
+      let isVideoActive = false;
+
+      // DOM Elements
+      const imgEl = document.getElementById('meme-display-img');
+      const coverEl = document.getElementById('meme-cover');
+      const videoContainer = document.getElementById('meme-video-container');
+      const switchMediaBtn = document.getElementById('switch-media-btn');
+      const counterEl = document.getElementById('meme-counter');
+      const prevBtn = document.getElementById('prev-meme-btn');
+      const nextBtn = document.getElementById('next-meme-btn');
+      const showBtn = document.getElementById('toggle-show-meme-btn');
+      const showBtnText = document.getElementById('show-btn-text');
+      const pillsTrack = document.getElementById('pills-track');
+      const spotlightView = document.getElementById('spotlight-view');
+      const gridView = document.getElementById('grid-view');
+      const viewSpotlightBtn = document.getElementById('view-spotlight-btn');
+      const viewGridBtn = document.getElementById('view-grid-btn');
+      const allMemesGrid = document.getElementById('all-memes-grid');
+      const audioEl = document.getElementById('meme-audio');
+      const angryAudioEl = document.getElementById('angry-audio');
+      const micAudio = document.getElementById('mic-test-audio');
+      const micBtn = document.getElementById('mic-test-btn');
+      let angryAudioTimeout = null;
+
+      // Modal & Form Elements
+      const openAddModalBtn = document.getElementById('open-add-meme-modal-btn');
+      const gridAddModalBtn = document.getElementById('grid-add-meme-btn');
+      const addMemeModal = document.getElementById('add-meme-modal');
+      const modalBackdrop = document.getElementById('modal-backdrop');
+      const modalCloseBtn = document.getElementById('modal-close-btn');
+      const modalCancelBtn = document.getElementById('modal-cancel-btn');
+      const addMemeForm = document.getElementById('add-meme-form');
+      const memeNameInput = document.getElementById('meme-name-input');
+      const memeImageUrlInput = document.getElementById('meme-image-url-input');
+      const memeImageFileInput = document.getElementById('meme-image-file-input');
+      const memeVideoInput = document.getElementById('meme-video-input');
+      const memeVideoFileInput = document.getElementById('meme-video-file-input');
+      const tabImageUrl = document.getElementById('tab-image-url');
+      const tabImageFile = document.getElementById('tab-image-file');
+      const tabVideoUrl = document.getElementById('tab-video-url');
+      const tabVideoFile = document.getElementById('tab-video-file');
+      const imageUrlPane = document.getElementById('image-url-pane');
+      const imageFilePane = document.getElementById('image-file-pane');
+      const videoUrlPane = document.getElementById('video-url-pane');
+      const videoFilePane = document.getElementById('video-file-pane');
+      const imagePreviewBox = document.getElementById('image-preview-box');
+      const imagePreviewEl = document.getElementById('image-preview-el');
+      const previewFilename = document.getElementById('preview-filename');
+      const clearPreviewBtn = document.getElementById('clear-image-preview-btn');
+      const videoPreviewBox = document.getElementById('video-preview-box');
+      const videoPreviewFilename = document.getElementById('video-preview-filename');
+      const videoPreviewFilesize = document.getElementById('video-preview-filesize');
+      const clearVideoPreviewBtn = document.getElementById('clear-video-preview-btn');
+      const toastEl = document.getElementById('meme-toast');
+      const showAngryBtn = document.getElementById('show-angry-btn');
+
+      let activeImageTab = 'url';
+      let uploadedImageDataUrl = null;
+      let activeVideoTab = 'url';
+      let uploadedVideoDataUrl = null;
+      let uploadedVideoBlobUrl = null;
+      let isAngryActive = false;
+
+      // Helper to extract media embed info (supports YouTube Shorts/Videos, Instagram Reels, & Local MP4s)
+      function extractMediaInfo(url) {
+        if (!url) return null;
+
+        // Local or Data Video (MP4 / WebM / Blob / Data URL)
+        if (url.endsWith('.mp4') || url.endsWith('.webm') || url.includes('.mp4?') || url.includes('.webm?') || url.startsWith('data:video/') || url.startsWith('blob:')) {
+          return {
+            platform: 'local',
+            embedUrl: url,
+            orientation: 'portrait'
+          };
+        }
+
+        // Instagram Reel / Post
+        const instaMatch = url.match(/instagram\.com\/(?:reel|p)\/([a-zA-Z0-9_-]+)/);
+        if (instaMatch && instaMatch[1]) {
+          const id = instaMatch[1];
+          return {
+            platform: 'instagram',
+            embedUrl: 'https://www.instagram.com/reel/' + id + '/embed/',
+            orientation: 'portrait'
+          };
+        }
+
+        // YouTube (Shorts & Standard Watch Videos, including yout.com proxy URLs)
+        const ytMatch = url.match(/(?:shorts\/|v=|youtu\.be\/|\/v\/|\/e\/|embed\/)([a-zA-Z0-9_-]{11})/);
+        if (ytMatch && ytMatch[1]) {
+          const id = ytMatch[1];
+          const isShort = url.includes('/shorts/');
+          return {
+            platform: 'youtube',
+            embedUrl: 'https://www.youtube-nocookie.com/embed/' + id + '?autoplay=1&controls=0&rel=0&modestbranding=1&loop=1&playlist=' + id + '&playsinline=1&iv_load_policy=3&showinfo=0&disablekb=1&fs=0',
+            orientation: isShort ? 'portrait' : 'landscape'
+          };
+        }
+
+        // Default fallback to local player
+        return {
+          platform: 'local',
+          embedUrl: url,
+          orientation: 'portrait'
+        };
+      }
+
+      // Play audio if redirected with ?audio=play
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('audio') === 'play' && audioEl) {
+        audioEl.play().catch(function (err) {
+          console.log('Audio autoplay note:', err);
+        });
+      }
+
+      // Render Quick Selector Pills
+      function renderPills() {
+        pillsTrack.innerHTML = '';
+        allMemes.forEach(function (m, idx) {
+          const pill = document.createElement('button');
+          pill.className = 'meme-pill' + (idx === currentIndex ? ' active' : '');
+          pill.textContent = (idx + 1);
+          pill.title = 'Jump to ' + (m.name || ('Meme ' + (idx + 1)));
+          pill.addEventListener('click', function () {
+            selectMeme(idx);
+          });
+          pillsTrack.appendChild(pill);
+        });
+      }
+
+      // Render All Memes Grid Cards
+      function renderGrid() {
+        allMemesGrid.innerHTML = '';
+        allMemes.forEach(function (m, idx) {
+          const card = document.createElement('article');
+          card.className = 'grid-meme-card';
+          card.innerHTML = `
+            <div class="card-thumb-box">
+              <img class="card-thumb-img" src="${m.src}" alt="${m.name}" loading="lazy" />
+            </div>
+            <div class="card-footer-bar">
+              <span class="card-label">${m.name || ('Meme ' + (idx + 1))}</span>
+              <button class="card-select-btn">Show meme</button>
+            </div>
+          `;
+          card.addEventListener('click', function () {
+            selectMeme(idx);
+            switchView('spotlight');
+          });
+          allMemesGrid.appendChild(card);
+        });
+      }
+
+      // Initialize pills and grid
+      renderPills();
+      renderGrid();
+
+      function updateMemeView() {
+        const meme = allMemes[currentIndex];
+        
+        // Reset Angry Man state and audio
+        isAngryActive = false;
+        if (showAngryBtn) showAngryBtn.classList.remove('active');
+        if (angryAudioTimeout) {
+          clearTimeout(angryAudioTimeout);
+          angryAudioTimeout = null;
+        }
+        if (angryAudioEl) {
+          angryAudioEl.pause();
+          angryAudioEl.currentTime = 0;
+        }
+        if (micAudio && !micAudio.paused) {
+          micAudio.pause();
+          micAudio.currentTime = 0;
+          if (micBtn) micBtn.classList.remove('playing');
+        }
+
+        // Reset video container and pause any playing video when switching memes
+        isVideoActive = false;
+        const currentVideo = videoContainer.querySelector('video');
+        if (currentVideo) {
+          currentVideo.pause();
+          currentVideo.src = '';
+        }
+        videoContainer.classList.add('hidden');
+        videoContainer.innerHTML = '';
+        switchMediaBtn.classList.add('hidden');
+
+        imgEl.src = meme.src;
+        imgEl.classList.remove('hidden');
+        coverEl.classList.add('hidden');
+        imgEl.alt = (meme.name || ('Meme ' + (currentIndex + 1)));
+        counterEl.textContent = 'Meme ' + (currentIndex + 1) + ' / ' + allMemes.length;
+        showBtnText.textContent = 'Show meme';
+
+        prevBtn.disabled = (currentIndex === 0);
+        nextBtn.disabled = (currentIndex === allMemes.length - 1);
+
+        // Update active pill
+        const pills = pillsTrack.querySelectorAll('.meme-pill');
+        pills.forEach(function (p, idx) {
+          p.classList.toggle('active', idx === currentIndex);
+        });
+        if (pills[currentIndex]) {
+          pills[currentIndex].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+        }
+      }
+
+      function selectMeme(index) {
+        currentIndex = index;
+        updateMemeView();
+      }
+
+      // Render media cleanly according to platform and orientation
+      function renderVideo(meme, mediaInfo) {
+        const orientation = meme.orientation || mediaInfo.orientation || 'portrait';
+        videoContainer.className = 'meme-video-container ' + orientation + ' ' + mediaInfo.platform;
+
+        if (mediaInfo.platform === 'local') {
+          videoContainer.innerHTML = `
+            <video class="meme-local-video" src="${mediaInfo.embedUrl}" autoplay loop playsinline></video>
+          `;
+          const localVid = videoContainer.querySelector('.meme-local-video');
+          if (localVid) {
+            localVid.play().catch(function (err) {
+              console.log('Local video play catch:', err);
+            });
+            localVid.addEventListener('click', function () {
+              if (localVid.paused) {
+                localVid.play();
+              } else {
+                localVid.pause();
+              }
+            });
+          }
+        } else if (mediaInfo.platform === 'instagram') {
+          videoContainer.innerHTML = `
+            <div class="meme-video-cropper instagram">
+              <iframe class="meme-instagram-iframe" 
+                      src="${mediaInfo.embedUrl}" 
+                      title="Instagram Reel" 
+                      frameborder="0" 
+                      scrolling="no" 
+                      allowtransparency="true" 
+                      allowfullscreen>
+              </iframe>
+            </div>
+          `;
+        } else {
+          videoContainer.innerHTML = `
+            <div class="meme-video-cropper ${orientation}">
+              <iframe class="meme-youtube-iframe" 
+                      src="${mediaInfo.embedUrl}" 
+                      title="Meme Video" 
+                      frameborder="0" 
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                      allowfullscreen>
+              </iframe>
+            </div>
+          `;
+        }
+      }
+
+      // "Show meme" button displays YouTube/Instagram video in the same screen (or image)
+      showBtn.addEventListener('click', function () {
+        const meme = allMemes[currentIndex];
+        const mediaInfo = extractMediaInfo(meme.videoUrl);
+
+        if (mediaInfo) {
+          // Pause background audio so video audio plays cleanly
+          if (audioEl && !audioEl.paused) {
+            audioEl.pause();
+          }
+
+          // Show video in the same rounded corner box, cropped to hide overlay icons
+          isVideoActive = true;
+          imgEl.classList.add('hidden');
+          coverEl.classList.add('hidden');
+          renderVideo(meme, mediaInfo);
+          switchMediaBtn.classList.remove('hidden');
+          switchMediaBtn.innerHTML = 'Show Image';
+        } else {
+          // Show image with pop animation
+          isVideoActive = false;
+          videoContainer.className = 'meme-video-container hidden';
+          videoContainer.innerHTML = '';
+          imgEl.src = meme.src;
+          imgEl.alt = (meme.name || ('Meme ' + (currentIndex + 1)));
+          imgEl.classList.remove('hidden');
+          coverEl.classList.add('hidden');
+          switchMediaBtn.classList.add('hidden');
+          imgEl.style.animation = 'none';
+          imgEl.offsetHeight; // reflow
+          imgEl.style.animation = 'memePop 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards';
+        }
+      });
+
+      // Switch between Image and Video if video is available
+      switchMediaBtn.addEventListener('click', function () {
+        const meme = allMemes[currentIndex];
+        const mediaInfo = extractMediaInfo(meme.videoUrl);
+        if (!mediaInfo) return;
+
+        if (isVideoActive) {
+          // Switch to Image
+          isVideoActive = false;
+          const currentVideo = videoContainer.querySelector('video');
+          if (currentVideo) {
+            currentVideo.pause();
+          }
+          videoContainer.className = 'meme-video-container hidden';
+          videoContainer.innerHTML = '';
+          imgEl.src = meme.src;
+          imgEl.classList.remove('hidden');
+          switchMediaBtn.innerHTML = 'Show Video';
+        } else {
+          // Switch back to Video
+          isVideoActive = true;
+          imgEl.classList.add('hidden');
+          renderVideo(meme, mediaInfo);
+          switchMediaBtn.innerHTML = 'Show Image';
+        }
+      });
+
+      nextBtn.addEventListener('click', function () {
+        if (currentIndex < allMemes.length - 1) {
+          currentIndex++;
+          updateMemeView();
+        }
+      });
+
+      prevBtn.addEventListener('click', function () {
+        if (currentIndex > 0) {
+          currentIndex--;
+          updateMemeView();
+        }
+      });
+
+      // View Switcher (Spotlight vs All Memes Grid)
+      function switchView(mode) {
+        if (mode === 'spotlight') {
+          spotlightView.classList.remove('hidden');
+          gridView.classList.add('hidden');
+          viewSpotlightBtn.classList.add('active');
+          viewGridBtn.classList.remove('active');
+        } else {
+          spotlightView.classList.add('hidden');
+          gridView.classList.remove('hidden');
+          viewSpotlightBtn.classList.remove('active');
+          viewGridBtn.classList.add('active');
+        }
+      }
+
+      viewSpotlightBtn.addEventListener('click', function () {
+        switchView('spotlight');
+      });
+
+      viewGridBtn.addEventListener('click', function () {
+        switchView('grid');
+      });
+
+      // Modal Open/Close Controls
+      function openModal() {
+        addMemeModal.classList.remove('hidden');
+        memeNameInput.value = 'Meme ' + (allMemes.length + 1);
+        memeImageUrlInput.value = '';
+        memeImageFileInput.value = '';
+        memeVideoInput.value = '';
+        if (memeVideoFileInput) memeVideoFileInput.value = '';
+        uploadedImageDataUrl = null;
+        if (uploadedVideoBlobUrl && uploadedVideoBlobUrl.startsWith('blob:')) {
+          URL.revokeObjectURL(uploadedVideoBlobUrl);
+        }
+        uploadedVideoBlobUrl = null;
+        uploadedVideoDataUrl = null;
+        imagePreviewBox.classList.add('hidden');
+        imagePreviewEl.src = '';
+        if (videoPreviewBox) videoPreviewBox.classList.add('hidden');
+        switchImageTab('url');
+        switchVideoTab('url');
+        const portraitRadio = document.querySelector('input[name="orientation"][value="portrait"]');
+        if (portraitRadio) portraitRadio.checked = true;
+        memeNameInput.focus();
+      }
+
+      function closeModal() {
+        addMemeModal.classList.add('hidden');
+      }
+
+      if (openAddModalBtn) openAddModalBtn.addEventListener('click', openModal);
+      if (gridAddModalBtn) gridAddModalBtn.addEventListener('click', openModal);
+      if (modalBackdrop) modalBackdrop.addEventListener('click', closeModal);
+      if (modalCloseBtn) modalCloseBtn.addEventListener('click', closeModal);
+      if (modalCancelBtn) modalCancelBtn.addEventListener('click', closeModal);
+
+      // Image tab switching: URL vs Upload
+      function switchImageTab(tab) {
+        activeImageTab = tab;
+        if (tab === 'url') {
+          tabImageUrl.classList.add('active');
+          tabImageFile.classList.remove('active');
+          imageUrlPane.classList.remove('hidden');
+          imageFilePane.classList.add('hidden');
+          if (memeImageUrlInput.value.trim()) {
+            imagePreviewEl.src = memeImageUrlInput.value.trim();
+            if (previewFilename) previewFilename.textContent = 'Image URL';
+            imagePreviewBox.classList.remove('hidden');
+          } else if (!uploadedImageDataUrl) {
+            imagePreviewBox.classList.add('hidden');
+          }
+        } else {
+          tabImageUrl.classList.remove('active');
+          tabImageFile.classList.add('active');
+          imageUrlPane.classList.add('hidden');
+          imageFilePane.classList.remove('hidden');
+          if (uploadedImageDataUrl) {
+            imagePreviewEl.src = uploadedImageDataUrl;
+            imagePreviewBox.classList.remove('hidden');
+          } else {
+            imagePreviewBox.classList.add('hidden');
+          }
+        }
+      }
+
+      if (tabImageUrl) tabImageUrl.addEventListener('click', function () { switchImageTab('url'); });
+      if (tabImageFile) tabImageFile.addEventListener('click', function () { switchImageTab('file'); });
+
+      // Video tab switching: Link vs Upload from Computer
+      function switchVideoTab(tab) {
+        activeVideoTab = tab;
+        if (tab === 'url') {
+          tabVideoUrl.classList.add('active');
+          tabVideoFile.classList.remove('active');
+          videoUrlPane.classList.remove('hidden');
+          videoFilePane.classList.add('hidden');
+          if (uploadedVideoBlobUrl || uploadedVideoDataUrl) {
+            videoPreviewBox.classList.remove('hidden');
+          }
+        } else {
+          tabVideoUrl.classList.remove('active');
+          tabVideoFile.classList.add('active');
+          videoUrlPane.classList.add('hidden');
+          videoFilePane.classList.remove('hidden');
+          if (uploadedVideoBlobUrl || uploadedVideoDataUrl) {
+            videoPreviewBox.classList.remove('hidden');
+          } else {
+            videoPreviewBox.classList.add('hidden');
+          }
+        }
+      }
+
+      if (tabVideoUrl) tabVideoUrl.addEventListener('click', function () { switchVideoTab('url'); });
+      if (tabVideoFile) tabVideoFile.addEventListener('click', function () { switchVideoTab('file'); });
+
+      // Image file selection & conversion to Data URL
+      if (memeImageFileInput) {
+        memeImageFileInput.addEventListener('change', function () {
+          const file = memeImageFileInput.files[0];
+          if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+              uploadedImageDataUrl = e.target.result;
+              imagePreviewEl.src = uploadedImageDataUrl;
+              if (previewFilename) previewFilename.textContent = file.name;
+              imagePreviewBox.classList.remove('hidden');
+            };
+            reader.readAsDataURL(file);
+          }
+        });
+      }
+
+      // Video file selection from computer & auto orientation detection
+      if (memeVideoFileInput) {
+        memeVideoFileInput.addEventListener('change', function () {
+          const file = memeVideoFileInput.files[0];
+          if (file) {
+            if (uploadedVideoBlobUrl && uploadedVideoBlobUrl.startsWith('blob:')) {
+              URL.revokeObjectURL(uploadedVideoBlobUrl);
+            }
+            uploadedVideoBlobUrl = URL.createObjectURL(file);
+            if (videoPreviewFilename) videoPreviewFilename.textContent = file.name;
+            const sizeMb = (file.size / (1024 * 1024)).toFixed(1);
+            if (videoPreviewFilesize) videoPreviewFilesize.textContent = sizeMb + ' MB - Ready to play';
+            if (videoPreviewBox) videoPreviewBox.classList.remove('hidden');
+
+            // Auto-detect orientation from video file dimensions
+            const tempVid = document.createElement('video');
+            tempVid.src = uploadedVideoBlobUrl;
+            tempVid.onloadedmetadata = function () {
+              if (tempVid.videoHeight >= tempVid.videoWidth) {
+                const p = document.querySelector('input[name="orientation"][value="portrait"]');
+                if (p) p.checked = true;
+              } else {
+                const l = document.querySelector('input[name="orientation"][value="landscape"]');
+                if (l) l.checked = true;
+              }
+            };
+
+            // Attempt Data URL conversion for persistence if <= 10MB
+            if (file.size <= 10 * 1024 * 1024) {
+              const reader = new FileReader();
+              reader.onload = function (e) {
+                uploadedVideoDataUrl = e.target.result;
+              };
+              reader.readAsDataURL(file);
+            } else {
+              uploadedVideoDataUrl = null;
+            }
+          }
+        });
+      }
+
+      // Clear video preview
+      if (clearVideoPreviewBtn) {
+        clearVideoPreviewBtn.addEventListener('click', function () {
+          if (uploadedVideoBlobUrl && uploadedVideoBlobUrl.startsWith('blob:')) {
+            URL.revokeObjectURL(uploadedVideoBlobUrl);
+          }
+          uploadedVideoBlobUrl = null;
+          uploadedVideoDataUrl = null;
+          if (memeVideoFileInput) memeVideoFileInput.value = '';
+          if (videoPreviewBox) videoPreviewBox.classList.add('hidden');
+        });
+      }
+
+      // Image URL live preview
+      if (memeImageUrlInput) {
+        memeImageUrlInput.addEventListener('input', function () {
+          const val = memeImageUrlInput.value.trim();
+          if (val) {
+            imagePreviewEl.src = val;
+            if (previewFilename) previewFilename.textContent = 'Image URL';
+            imagePreviewBox.classList.remove('hidden');
+          } else {
+            imagePreviewBox.classList.add('hidden');
+          }
+        });
+      }
+
+      // Clear image preview
+      if (clearPreviewBtn) {
+        clearPreviewBtn.addEventListener('click', function () {
+          uploadedImageDataUrl = null;
+          if (memeImageFileInput) memeImageFileInput.value = '';
+          if (memeImageUrlInput) memeImageUrlInput.value = '';
+          imagePreviewBox.classList.add('hidden');
+          imagePreviewEl.src = '';
+        });
+      }
+
+      // Auto-detect orientation on video link input
+      if (memeVideoInput) {
+        memeVideoInput.addEventListener('input', function () {
+          const val = memeVideoInput.value.trim();
+          if (val.includes('/shorts/') || val.includes('instagram.com/reel')) {
+            const p = document.querySelector('input[name="orientation"][value="portrait"]');
+            if (p) p.checked = true;
+          } else if (val.includes('/watch?v=') || (val.includes('youtu.be/') && !val.includes('/shorts/'))) {
+            const l = document.querySelector('input[name="orientation"][value="landscape"]');
+            if (l) l.checked = true;
+          }
+        });
+      }
+
+      function showToast(msg) {
+        if (!toastEl) return;
+        toastEl.textContent = msg;
+        toastEl.classList.add('show');
+        setTimeout(function () {
+          toastEl.classList.remove('show');
+        }, 3000);
+      }
+
+      // Form submission: adds meme in the same format
+      if (addMemeForm) {
+        addMemeForm.addEventListener('submit', function (e) {
+          e.preventDefault();
+          const name = memeNameInput.value.trim() || ('Meme ' + (allMemes.length + 1));
+          
+          let src = '';
+          if (activeImageTab === 'file' && uploadedImageDataUrl) {
+            src = uploadedImageDataUrl;
+          } else if (memeImageUrlInput.value.trim()) {
+            src = memeImageUrlInput.value.trim();
+          } else if (uploadedImageDataUrl) {
+            src = uploadedImageDataUrl;
+          } else {
+            alert('Please provide an image URL or choose an image file from your computer.');
+            return;
+          }
+
+          let videoUrl = '';
+          if (activeVideoTab === 'file' && (uploadedVideoDataUrl || uploadedVideoBlobUrl)) {
+            videoUrl = uploadedVideoDataUrl || uploadedVideoBlobUrl;
+          } else if (memeVideoInput.value.trim()) {
+            videoUrl = memeVideoInput.value.trim();
+          } else if (uploadedVideoDataUrl || uploadedVideoBlobUrl) {
+            videoUrl = uploadedVideoDataUrl || uploadedVideoBlobUrl;
+          } else {
+            alert('Please provide a video link or select a video file from your computer.');
+            return;
+          }
+
+          const orientationRadio = document.querySelector('input[name="orientation"]:checked');
+          const orientation = orientationRadio ? orientationRadio.value : 'portrait';
+
+          const newMeme = {
+            id: allMemes.length + 1,
+            name: name,
+            src: src,
+            videoUrl: videoUrl,
+            orientation: orientation
+          };
+
+          customMemes.push(newMeme);
+          allMemes.push(newMeme);
+          saveCustomMemes(customMemes);
+
+          renderPills();
+          renderGrid();
+          selectMeme(allMemes.length - 1);
+          switchView('spotlight');
+          closeModal();
+          showToast(name + ' added to challenge!');
+        });
+      }
+
+      // Angry Man feature: displays angry.png in the meme window & plays angry_audio for only 1 sec
+      function showAngryMan() {
+        // Switch to spotlight view if in grid mode
+        if (spotlightView && spotlightView.classList.contains('hidden')) {
+          switchView('spotlight');
+        }
+
+        // Pause background audio
+        if (audioEl && !audioEl.paused) {
+          audioEl.pause();
+        }
+
+        // Stop and hide video player if running
+        isVideoActive = false;
+        const currentVideo = videoContainer.querySelector('video');
+        if (currentVideo) {
+          currentVideo.pause();
+          currentVideo.src = '';
+        }
+        videoContainer.classList.add('hidden');
+        videoContainer.innerHTML = '';
+        switchMediaBtn.classList.add('hidden');
+
+        // Show angry man photo in the meme window
+        const wasAlreadyAngry = isAngryActive;
+        isAngryActive = true;
+        imgEl.src = 'assets/images/angry.png';
+        imgEl.alt = 'Angry Man';
+        imgEl.classList.remove('hidden');
+        coverEl.classList.add('hidden');
+
+        // Pop animation
+        imgEl.style.animation = 'none';
+        imgEl.offsetHeight; // force reflow
+        imgEl.style.animation = 'memePop 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards';
+
+        // Play angry_audio for exactly 1 second (resets to 0s and plays each time clicked)
+        if (angryAudioEl) {
+          if (angryAudioTimeout) {
+            clearTimeout(angryAudioTimeout);
+            angryAudioTimeout = null;
+          }
+          angryAudioEl.currentTime = 0;
+          angryAudioEl.play().catch(function (err) {
+            console.warn('Angry audio play notice:', err);
+          });
+          angryAudioTimeout = setTimeout(function () {
+            angryAudioEl.pause();
+            angryAudioEl.currentTime = 0;
+          }, 1000);
+        }
+
+        if (showAngryBtn) showAngryBtn.classList.add('active');
+        if (!wasAlreadyAngry) {
+          showToast('Angry Man shown in meme window');
+        }
+      }
+
+      // Dismiss Angry Man and restore current meme view
+      function dismissAngryMan() {
+        if (!isAngryActive) return;
+        isAngryActive = false;
+        if (showAngryBtn) showAngryBtn.classList.remove('active');
+        if (angryAudioTimeout) {
+          clearTimeout(angryAudioTimeout);
+          angryAudioTimeout = null;
+        }
+        if (angryAudioEl) {
+          angryAudioEl.pause();
+          angryAudioEl.currentTime = 0;
+        }
+        const meme = allMemes[currentIndex];
+        if (meme) {
+          imgEl.src = meme.src;
+          imgEl.alt = (meme.name || ('Meme ' + (currentIndex + 1)));
+        }
+      }
+
+      // Angry Man button click: keeps Angry Man visible, restarts & plays 1s audio every time clicked
+      if (showAngryBtn) {
+        showAngryBtn.addEventListener('click', function (e) {
+          e.stopPropagation();
+          showAngryMan();
+        });
+      }
+
+      // Disappear Angry Man ONLY when any other button on the page is clicked
+      document.addEventListener('click', function (e) {
+        if (!isAngryActive) return;
+        const targetBtn = e.target.closest('button, a, .meme-pill, .grid-meme-card');
+        if (targetBtn && targetBtn !== showAngryBtn && !showAngryBtn.contains(targetBtn)) {
+          dismissAngryMan();
+        }
+      }, true);
+
+      // Mic Test Button - Plays mic_test.mpeg completely
+      if (micBtn && micAudio) {
+        micAudio.addEventListener('ended', function () {
+          micBtn.classList.remove('playing');
+          micAudio.currentTime = 0;
+        });
+
+        micBtn.addEventListener('click', function (e) {
+          e.stopPropagation();
+          if (!micAudio.paused) {
+            micAudio.pause();
+            micAudio.currentTime = 0;
+            micBtn.classList.remove('playing');
+            showToast('Mic test stopped');
+          } else {
+            // Stop other audios/videos if playing
+            if (audioEl && !audioEl.paused) audioEl.pause();
+            if (angryAudioEl && !angryAudioEl.paused) angryAudioEl.pause();
+            const currentVideo = videoContainer.querySelector('video');
+            if (currentVideo && !currentVideo.paused) currentVideo.pause();
+
+            micAudio.currentTime = 0;
+            micAudio.play().then(function () {
+              micBtn.classList.add('playing');
+              showToast('Playing Mic Test audio completely...');
+            }).catch(function (err) {
+              console.warn('Mic audio play error:', err);
+            });
+          }
+        });
+      }
+
+      // Keyboard navigation
+      window.addEventListener('keydown', function (e) {
+        if (!addMemeModal.classList.contains('hidden')) {
+          if (e.key === 'Escape') closeModal();
+          return;
+        }
+        if (document.activeElement && (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA')) {
+          return;
+        }
+
+        if (e.key === 'ArrowRight' || e.key === 'n' || e.key === 'N') {
+          if (currentIndex < allMemes.length - 1) {
+            currentIndex++;
+            updateMemeView();
+          }
+        } else if (e.key === 'ArrowLeft' || e.key === 'p' || e.key === 'P') {
+          if (currentIndex > 0) {
+            currentIndex--;
+            updateMemeView();
+          }
+        } else if (e.key === ' ' || e.key === 's' || e.key === 'S') {
+          // Space or 'S' clicks "Show meme"
+          if (document.activeElement.tagName !== 'BUTTON') {
+            e.preventDefault();
+            showBtn.click();
+          }
+        }
+      });
+
+      // Initial render on load: shows first meme
+      updateMemeView();
+    })();
+  </script>
+</body>
+</html>
