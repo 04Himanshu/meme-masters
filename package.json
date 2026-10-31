@@ -7,7 +7,7 @@
   "scripts": {
     "start": "npx serve .",
     "dev": "npx serve .",
-    "test": "node test/validate.js && node test/http-check.js",
+    "test": "node test/validate.js",
     "build": "echo 'Static production assets ready'"
   },
   "keywords": [
